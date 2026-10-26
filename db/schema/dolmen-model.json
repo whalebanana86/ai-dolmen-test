@@ -1,0 +1,147 @@
+{
+  "format": 1,
+  "database": {
+    "schemas": [
+      {
+        "name": "churn_test",
+        "tables": [
+          {
+            "name": "t",
+            "kind": "table",
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "integer",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              }
+            ],
+            "constraints": [
+              {
+                "name": "t_pkey",
+                "kind": "primaryKey",
+                "definition": "PRIMARY KEY (id)"
+              }
+            ],
+            "indexes": [],
+            "partitionKey": null,
+            "comment": null
+          }
+        ],
+        "views": [
+          {
+            "name": "v",
+            "materialized": false,
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "integer",
+                "nullable": true,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              }
+            ],
+            "definition": " SELECT id\n   FROM churn_test.t;",
+            "comment": null
+          }
+        ],
+        "functions": [
+          {
+            "name": "f",
+            "arguments": "",
+            "kind": "function",
+            "definition": "CREATE OR REPLACE FUNCTION churn_test.f()\n RETURNS integer\n LANGUAGE sql\nAS $function$SELECT 1$function$\n"
+          }
+        ],
+        "sequences": [],
+        "enums": []
+      },
+      {
+        "name": "public",
+        "tables": [
+          {
+            "name": "notes",
+            "kind": "table",
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "integer",
+                "nullable": false,
+                "default": "nextval('public.notes_id_seq'::regclass)",
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "body",
+                "dataType": "text",
+                "nullable": true,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              }
+            ],
+            "constraints": [
+              {
+                "name": "notes_pkey",
+                "kind": "primaryKey",
+                "definition": "PRIMARY KEY (id)"
+              }
+            ],
+            "indexes": [],
+            "partitionKey": null,
+            "comment": null
+          },
+          {
+            "name": "users",
+            "kind": "table",
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "integer",
+                "nullable": true,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "email",
+                "dataType": "text",
+                "nullable": true,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "memo",
+                "dataType": "text",
+                "nullable": true,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              }
+            ],
+            "constraints": [],
+            "indexes": [],
+            "partitionKey": null,
+            "comment": null
+          }
+        ],
+        "views": [],
+        "functions": [],
+        "sequences": [],
+        "enums": []
+      }
+    ],
+    "extensions": []
+  }
+}
