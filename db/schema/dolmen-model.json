@@ -140,6 +140,698 @@
         "functions": [],
         "sequences": [],
         "enums": []
+      },
+      {
+        "name": "shop",
+        "tables": [
+          {
+            "name": "addresses",
+            "kind": "table",
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "bigint",
+                "nullable": false,
+                "default": null,
+                "identity": "always",
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "customer_id",
+                "dataType": "bigint",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "label",
+                "dataType": "text",
+                "nullable": false,
+                "default": "'집'::text",
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "line1",
+                "dataType": "text",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "city",
+                "dataType": "text",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              }
+            ],
+            "constraints": [
+              {
+                "name": "addresses_customer_id_fkey",
+                "kind": "foreignKey",
+                "definition": "FOREIGN KEY (customer_id) REFERENCES shop.customers(id) ON DELETE CASCADE"
+              },
+              {
+                "name": "addresses_pkey",
+                "kind": "primaryKey",
+                "definition": "PRIMARY KEY (id)"
+              }
+            ],
+            "indexes": [],
+            "partitionKey": null,
+            "comment": "고객의 배송지. 고객을 지우면 함께 지워짐"
+          },
+          {
+            "name": "categories",
+            "kind": "table",
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "integer",
+                "nullable": false,
+                "default": null,
+                "identity": "always",
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "parent_id",
+                "dataType": "integer",
+                "nullable": true,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "name",
+                "dataType": "text",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              }
+            ],
+            "constraints": [
+              {
+                "name": "categories_parent_id_fkey",
+                "kind": "foreignKey",
+                "definition": "FOREIGN KEY (parent_id) REFERENCES shop.categories(id) ON DELETE SET NULL"
+              },
+              {
+                "name": "categories_pkey",
+                "kind": "primaryKey",
+                "definition": "PRIMARY KEY (id)"
+              }
+            ],
+            "indexes": [],
+            "partitionKey": null,
+            "comment": "상품 분류. parent_id가 상위 분류를 가리킴"
+          },
+          {
+            "name": "coupons",
+            "kind": "table",
+            "columns": [
+              {
+                "name": "code",
+                "dataType": "text",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "percent_off",
+                "dataType": "integer",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "expires_on",
+                "dataType": "date",
+                "nullable": true,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              }
+            ],
+            "constraints": [
+              {
+                "name": "coupons_percent_off_check",
+                "kind": "check",
+                "definition": "CHECK (percent_off >= 1 AND percent_off <= 100)"
+              },
+              {
+                "name": "coupons_pkey",
+                "kind": "primaryKey",
+                "definition": "PRIMARY KEY (code)"
+              }
+            ],
+            "indexes": [],
+            "partitionKey": null,
+            "comment": "할인 쿠폰. 다른 테이블과 관계 없음"
+          },
+          {
+            "name": "customers",
+            "kind": "table",
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "bigint",
+                "nullable": false,
+                "default": null,
+                "identity": "always",
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "email",
+                "dataType": "character varying(255)",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "name",
+                "dataType": "text",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "joined_on",
+                "dataType": "date",
+                "nullable": false,
+                "default": "CURRENT_DATE",
+                "identity": null,
+                "generated": null,
+                "comment": "가입한 날"
+              }
+            ],
+            "constraints": [
+              {
+                "name": "customers_email_key",
+                "kind": "unique",
+                "definition": "UNIQUE (email)"
+              },
+              {
+                "name": "customers_pkey",
+                "kind": "primaryKey",
+                "definition": "PRIMARY KEY (id)"
+              }
+            ],
+            "indexes": [],
+            "partitionKey": null,
+            "comment": "가입한 고객"
+          },
+          {
+            "name": "order_items",
+            "kind": "table",
+            "columns": [
+              {
+                "name": "order_id",
+                "dataType": "bigint",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "line_no",
+                "dataType": "integer",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "product_id",
+                "dataType": "integer",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "quantity",
+                "dataType": "integer",
+                "nullable": false,
+                "default": "1",
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "unit_price",
+                "dataType": "numeric(12,2)",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              }
+            ],
+            "constraints": [
+              {
+                "name": "order_items_order_id_fkey",
+                "kind": "foreignKey",
+                "definition": "FOREIGN KEY (order_id) REFERENCES shop.orders(id) ON DELETE CASCADE"
+              },
+              {
+                "name": "order_items_pkey",
+                "kind": "primaryKey",
+                "definition": "PRIMARY KEY (order_id, line_no)"
+              },
+              {
+                "name": "order_items_product_id_fkey",
+                "kind": "foreignKey",
+                "definition": "FOREIGN KEY (product_id) REFERENCES shop.products(id)"
+              },
+              {
+                "name": "order_items_quantity_check",
+                "kind": "check",
+                "definition": "CHECK (quantity > 0)"
+              }
+            ],
+            "indexes": [],
+            "partitionKey": null,
+            "comment": "주문 항목"
+          },
+          {
+            "name": "orders",
+            "kind": "table",
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "bigint",
+                "nullable": false,
+                "default": null,
+                "identity": "always",
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "customer_id",
+                "dataType": "bigint",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "shipping_address_id",
+                "dataType": "bigint",
+                "nullable": true,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "status",
+                "dataType": "text",
+                "nullable": false,
+                "default": "'pending'::text",
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "ordered_at",
+                "dataType": "timestamp with time zone",
+                "nullable": false,
+                "default": "now()",
+                "identity": null,
+                "generated": null,
+                "comment": null
+              }
+            ],
+            "constraints": [
+              {
+                "name": "orders_customer_id_fkey",
+                "kind": "foreignKey",
+                "definition": "FOREIGN KEY (customer_id) REFERENCES shop.customers(id) ON DELETE RESTRICT"
+              },
+              {
+                "name": "orders_pkey",
+                "kind": "primaryKey",
+                "definition": "PRIMARY KEY (id)"
+              },
+              {
+                "name": "orders_shipping_address_id_fkey",
+                "kind": "foreignKey",
+                "definition": "FOREIGN KEY (shipping_address_id) REFERENCES shop.addresses(id) ON DELETE SET NULL"
+              },
+              {
+                "name": "orders_status_check",
+                "kind": "check",
+                "definition": "CHECK (status = ANY (ARRAY['pending'::text, 'paid'::text, 'shipped'::text, 'cancelled'::text]))"
+              }
+            ],
+            "indexes": [
+              {
+                "name": "orders_customer_idx",
+                "definition": "CREATE INDEX orders_customer_idx ON shop.orders USING btree (customer_id)"
+              }
+            ],
+            "partitionKey": null,
+            "comment": "주문. 주문이 있는 고객은 지울 수 없음"
+          },
+          {
+            "name": "payments",
+            "kind": "table",
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "bigint",
+                "nullable": false,
+                "default": null,
+                "identity": "always",
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "order_id",
+                "dataType": "bigint",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "amount",
+                "dataType": "numeric(12,2)",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "paid_at",
+                "dataType": "timestamp with time zone",
+                "nullable": false,
+                "default": "now()",
+                "identity": null,
+                "generated": null,
+                "comment": null
+              }
+            ],
+            "constraints": [
+              {
+                "name": "payments_order_id_fkey",
+                "kind": "foreignKey",
+                "definition": "FOREIGN KEY (order_id) REFERENCES shop.orders(id)"
+              },
+              {
+                "name": "payments_order_id_key",
+                "kind": "unique",
+                "definition": "UNIQUE (order_id)"
+              },
+              {
+                "name": "payments_pkey",
+                "kind": "primaryKey",
+                "definition": "PRIMARY KEY (id)"
+              }
+            ],
+            "indexes": [],
+            "partitionKey": null,
+            "comment": "결제. 주문 하나에 결제 하나"
+          },
+          {
+            "name": "products",
+            "kind": "table",
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "integer",
+                "nullable": false,
+                "default": null,
+                "identity": "always",
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "category_id",
+                "dataType": "integer",
+                "nullable": true,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "sku",
+                "dataType": "text",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "name",
+                "dataType": "text",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "price",
+                "dataType": "numeric(12,2)",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              }
+            ],
+            "constraints": [
+              {
+                "name": "products_category_id_fkey",
+                "kind": "foreignKey",
+                "definition": "FOREIGN KEY (category_id) REFERENCES shop.categories(id) ON UPDATE CASCADE ON DELETE SET NULL"
+              },
+              {
+                "name": "products_pkey",
+                "kind": "primaryKey",
+                "definition": "PRIMARY KEY (id)"
+              },
+              {
+                "name": "products_price_check",
+                "kind": "check",
+                "definition": "CHECK (price >= 0::numeric)"
+              },
+              {
+                "name": "products_sku_key",
+                "kind": "unique",
+                "definition": "UNIQUE (sku)"
+              }
+            ],
+            "indexes": [],
+            "partitionKey": null,
+            "comment": "판매 상품"
+          },
+          {
+            "name": "reviews",
+            "kind": "table",
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "bigint",
+                "nullable": false,
+                "default": null,
+                "identity": "always",
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "product_id",
+                "dataType": "integer",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "customer_id",
+                "dataType": "bigint",
+                "nullable": true,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "rating",
+                "dataType": "smallint",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "body",
+                "dataType": "text",
+                "nullable": true,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              }
+            ],
+            "constraints": [
+              {
+                "name": "reviews_customer_id_fkey",
+                "kind": "foreignKey",
+                "definition": "FOREIGN KEY (customer_id) REFERENCES shop.customers(id) ON DELETE SET NULL"
+              },
+              {
+                "name": "reviews_pkey",
+                "kind": "primaryKey",
+                "definition": "PRIMARY KEY (id)"
+              },
+              {
+                "name": "reviews_product_id_fkey",
+                "kind": "foreignKey",
+                "definition": "FOREIGN KEY (product_id) REFERENCES shop.products(id) ON DELETE CASCADE"
+              },
+              {
+                "name": "reviews_rating_check",
+                "kind": "check",
+                "definition": "CHECK (rating >= 1 AND rating <= 5)"
+              }
+            ],
+            "indexes": [],
+            "partitionKey": null,
+            "comment": "상품 리뷰. 고객이 탈퇴해도 리뷰는 남음"
+          },
+          {
+            "name": "shipments",
+            "kind": "table",
+            "columns": [
+              {
+                "name": "id",
+                "dataType": "bigint",
+                "nullable": false,
+                "default": null,
+                "identity": "always",
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "order_id",
+                "dataType": "bigint",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "line_no",
+                "dataType": "integer",
+                "nullable": false,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "shipped_at",
+                "dataType": "timestamp with time zone",
+                "nullable": false,
+                "default": "now()",
+                "identity": null,
+                "generated": null,
+                "comment": null
+              }
+            ],
+            "constraints": [
+              {
+                "name": "shipments_order_id_line_no_fkey",
+                "kind": "foreignKey",
+                "definition": "FOREIGN KEY (order_id, line_no) REFERENCES shop.order_items(order_id, line_no) ON DELETE CASCADE"
+              },
+              {
+                "name": "shipments_pkey",
+                "kind": "primaryKey",
+                "definition": "PRIMARY KEY (id)"
+              }
+            ],
+            "indexes": [],
+            "partitionKey": null,
+            "comment": "주문 항목별 배송. (order_id, line_no) 복합 외래 키"
+          }
+        ],
+        "views": [
+          {
+            "name": "order_totals",
+            "materialized": false,
+            "columns": [
+              {
+                "name": "order_id",
+                "dataType": "bigint",
+                "nullable": true,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "customer",
+                "dataType": "text",
+                "nullable": true,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              },
+              {
+                "name": "total",
+                "dataType": "numeric",
+                "nullable": true,
+                "default": null,
+                "identity": null,
+                "generated": null,
+                "comment": null
+              }
+            ],
+            "definition": " SELECT o.id AS order_id,\n    c.name AS customer,\n    sum(i.quantity::numeric * i.unit_price) AS total\n   FROM shop.orders o\n     JOIN shop.customers c ON c.id = o.customer_id\n     JOIN shop.order_items i ON i.order_id = o.id\n  GROUP BY o.id, c.name;",
+            "comment": "주문별 합계"
+          }
+        ],
+        "functions": [],
+        "sequences": [],
+        "enums": []
       }
     ],
     "extensions": []
